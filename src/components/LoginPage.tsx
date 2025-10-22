@@ -10,11 +10,17 @@ interface LoginPageProps {
 const LoginPage = ({ onLogin }: LoginPageProps) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (username && password) {
+    setError('');
+    
+    // Validate credentials
+    if (username === 'Taffixion' && password === '1234@Taffixion') {
       onLogin();
+    } else {
+      setError('Invalid username or password');
     }
   };
 
@@ -39,6 +45,12 @@ const LoginPage = ({ onLogin }: LoginPageProps) => {
 
           {/* Login Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
+            {error && (
+              <div className="p-3 bg-destructive/10 border border-destructive/30 rounded-lg text-destructive text-sm text-center">
+                {error}
+              </div>
+            )}
+            
             <div className="space-y-2">
               <label className="text-sm font-medium text-foreground">
                 Username
@@ -46,7 +58,10 @@ const LoginPage = ({ onLogin }: LoginPageProps) => {
               <Input
                 type="text"
                 value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e) => {
+                  setUsername(e.target.value);
+                  setError('');
+                }}
                 placeholder="Enter your username"
                 className="h-12"
                 required
@@ -60,7 +75,10 @@ const LoginPage = ({ onLogin }: LoginPageProps) => {
               <Input
                 type="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setError('');
+                }}
                 placeholder="Enter your password"
                 className="h-12"
                 required
