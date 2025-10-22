@@ -81,7 +81,7 @@ const LoginPage = ({ onLogin }: LoginPageProps) => {
               Authorized personnel only
             </p>
             <p className="text-xs text-muted-foreground">
-              © 2024 Government of Odisha
+              © 2025 Government of Odisha
             </p>
           </div>
         </div>
