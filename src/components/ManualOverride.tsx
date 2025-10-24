@@ -50,8 +50,8 @@ const ManualOverride = ({ onOverride }: ManualOverrideProps) => {
       newOverride,
     ]);
 
+    // Call parent handler to actually apply the override
     onOverride(direction, signal);
-    console.log(`Manual override: ${direction} - ${signal.toUpperCase()}`);
   };
 
   const handleClearAll = () => {
