@@ -31,10 +31,9 @@ const Dashboard = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Countdown timer for active overrides and signal timers
+  // Countdown timer for active overrides only
   useEffect(() => {
     const interval = setInterval(() => {
-      // Update override timers
       setActiveOverrides((prev) => {
         const now = new Date();
         return prev
@@ -47,14 +46,6 @@ const Dashboard = () => {
           }))
           .filter((override) => override.remainingTime > 0);
       });
-
-      // Update signal timers
-      setSignals((prev) =>
-        prev.map((signal) => ({
-          ...signal,
-          timer: Math.max(0, signal.timer - 1),
-        }))
-      );
     }, 1000);
 
     return () => clearInterval(interval);
