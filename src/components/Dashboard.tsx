@@ -36,7 +36,9 @@ const Dashboard = () => {
         if (override) {
           return {
             ...signal,
-            status: override.signal,
+            red: override.signal === 'red',
+            yellow: override.signal === 'yellow',
+            green: override.signal === 'green',
           };
         }
         return signal;
@@ -70,7 +72,12 @@ const Dashboard = () => {
     // Immediately update the signal
     setSignals((prev) =>
       prev.map((s) =>
-        s.direction === direction ? { ...s, status: signal as 'red' | 'yellow' | 'green' } : s
+        s.direction === direction ? { 
+          ...s, 
+          red: signal === 'red',
+          yellow: signal === 'yellow',
+          green: signal === 'green'
+        } : s
       )
     );
 
