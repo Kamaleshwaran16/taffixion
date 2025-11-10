@@ -16,40 +16,48 @@ const Dashboard = () => {
   const [status, setStatus] = useState<TrafficStatusType[]>([]);
   const [activeOverrides, setActiveOverrides] = useState<ManualOverrideType[]>([]);
 
+  const [baseSignals, setBaseSignals] = useState<TrafficSignal[]>([]);
+
+  // Initialize and update base signals every 5 seconds
   useEffect(() => {
-    // Initialize data
-    setSignals(generateTrafficSignals());
+    setBaseSignals(generateTrafficSignals());
     setStatus(generateTrafficStatus());
 
-    // Update data every 5 seconds, but respect overrides
     const interval = setInterval(() => {
-      const newSignals = generateTrafficSignals();
-      
-      // Apply active overrides to the generated signals
-      const now = new Date();
-      const currentOverrides = activeOverrides.filter(
-        (override) => override.expiresAt.getTime() > now.getTime()
-      );
-      
-      const signalsWithOverrides = newSignals.map((signal) => {
-        const override = currentOverrides.find((o) => o.direction === signal.direction);
-        if (override) {
-          return {
-            ...signal,
-            red: override.signal === 'red',
-            yellow: override.signal === 'yellow',
-            green: override.signal === 'green',
-          };
-        }
-        return signal;
-      });
-      
-      setSignals(signalsWithOverrides);
+      setBaseSignals(generateTrafficSignals());
       setStatus(generateTrafficStatus());
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [activeOverrides]);
+  }, []);
+
+  // Apply overrides to base signals whenever they change
+  useEffect(() => {
+    const now = new Date();
+    const currentOverrides = activeOverrides.filter(
+      (override) => override.expiresAt.getTime() > now.getTime()
+    );
+
+    // Update activeOverrides to remove expired ones
+    if (currentOverrides.length !== activeOverrides.length) {
+      setActiveOverrides(currentOverrides);
+    }
+
+    const signalsWithOverrides = baseSignals.map((signal) => {
+      const override = currentOverrides.find((o) => o.direction === signal.direction);
+      if (override) {
+        return {
+          ...signal,
+          red: override.signal === 'red',
+          yellow: override.signal === 'yellow',
+          green: override.signal === 'green',
+        };
+      }
+      return signal;
+    });
+
+    setSignals(signalsWithOverrides);
+  }, [baseSignals, activeOverrides]);
 
   const handleOverride = (direction: string, signal: string) => {
     const now = new Date();
