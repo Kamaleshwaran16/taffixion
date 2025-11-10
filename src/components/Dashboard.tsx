@@ -31,6 +31,26 @@ const Dashboard = () => {
     return () => clearInterval(interval);
   }, []);
 
+  // Countdown timer for active overrides
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveOverrides((prev) => {
+        const now = new Date();
+        return prev
+          .map((override) => ({
+            ...override,
+            remainingTime: Math.max(
+              0,
+              Math.ceil((override.expiresAt.getTime() - now.getTime()) / 1000)
+            ),
+          }))
+          .filter((override) => override.remainingTime > 0);
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   // Apply overrides to base signals whenever they change
   useEffect(() => {
     const now = new Date();
@@ -51,6 +71,7 @@ const Dashboard = () => {
           red: override.signal === 'red',
           yellow: override.signal === 'yellow',
           green: override.signal === 'green',
+          timer: override.remainingTime,
         };
       }
       return signal;
